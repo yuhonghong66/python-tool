@@ -13,8 +13,9 @@ import urllib
 
 def read_url(url):
     data = urllib.request.urlopen(url)
-    print(data.read().decode('utf-8'))
-    data.close()    
+    text = data.read().decode('utf-8')
+    data.close()
+    return text
     
 def main():
     read_url('https://github.com/')   

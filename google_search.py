@@ -17,7 +17,7 @@ def google_search(query, limit=10):
     for url in search(query, lang="jp", num=10, stop=1):
         urls.append(url)
     print("search end")
-    print(urls)
+    return urls
 
 def main():
     google_search("<search words>")

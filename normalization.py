@@ -16,9 +16,21 @@ stopword_list = nltk.corpus.stopwords.words('english')
 wnl = WordNetLemmatizer()
 
 def tokenize_text(text):
-    tokens = nltk.word_tokenize(text) 
-    tokens = [token.strip() for token in tokens]
-    return tokens
+    
+    from janome.tokenizer import Tokenizer
+
+    t = Tokenizer()
+    tokens = t.tokenize(text.replace(',', ' '))
+    words = []
+
+    for token in tokens:
+        if (token.surface is not None) and token.surface != "":
+            words.append(token.surface)
+    return words
+    
+    # tokens = nltk.word_tokenize(text) 
+    # tokens = [token.strip() for token in tokens]
+    # return tokens
 
 def expand_contractions(text, contraction_mapping):
     
@@ -60,9 +72,11 @@ def normalize_corpus(corpus, tokenize=False):
     normalized_corpus = []    
     for text in corpus:
         text = expand_contractions(text, CONTRACTION_MAP)
+        print(text)
         text = remove_special_characters(text)
-        text = remove_stopwords(text)
+        print(text)
         normalized_corpus.append(text)
+        print(text)
         if tokenize:
             text = tokenize_text(text)
             normalized_corpus.append(text)

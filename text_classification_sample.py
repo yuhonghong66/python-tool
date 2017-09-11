@@ -9,16 +9,11 @@ Created on Sun Sep  3 07:55:11 2017
 from feature_extractors import bow_extractor, tfidf_extractor
 from feature_extractors import averaged_word_vectorizer
 from feature_extractors import tfidf_weighted_averaged_word_vectorizer
-from sklearn.datasets import fetch_20newsgroups
 from sklearn.cross_validation import train_test_split
 import nltk
 import gensim
+import pandas as pd
 
-def get_data():
-    data = fetch_20newsgroups(subset='all',
-                              shuffle=True,
-                              remove=('headers', 'footers', 'quotes'))
-    return data
     
 def prepare_datasets(corpus, labels, test_data_proportion=0.3):
     train_X, test_X, train_Y, test_Y = train_test_split(corpus, labels, 
@@ -35,17 +30,38 @@ def remove_empty_docs(corpus, labels):
 
     return filtered_corpus, filtered_labels
     
-    
-dataset = get_data()
 
-print(dataset.target_names)
+
+import google_search as gs
+import read_url
+urls = gs.google_search('王将')
+homepage_text = read_url.read_url(urls[0])
+
+import re
+p = re.compile(r"<[^>]*?>")
+homepage_text = p.sub("", homepage_text) 
+homepage_text = re.sub(r"\s|(&nbsp;)", "", homepage_text)
+
+from normalization import normalize_corpus
+homepage_text = homepage_text.strip()
+homepage_text = homepage_text.replace("\xc2\xa0", "")
+print(homepage_text)
+
+import get_tokens as gt
+data = gt.get_tokens(homepage_text)  
+print(data)  
+
+dataset = pd.DataFrame(columns =['target', 'data'])
+df3 = pd.DataFrame([['中華料理', data]], columns =['target', 'data'])
+dataset = dataset.append(df3)
+dataset = dataset.append(df3)
+
 
 corpus, labels = dataset.data, dataset.target
-corpus, labels = remove_empty_docs(corpus, labels)
 
-print('Sample document:', corpus[10])
-print('Class label:',labels[1])
-print('Actual class label:', dataset.target_names[labels[10]])
+
+print('Sample document:', corpus[0])
+print('Class label:',labels[0])
 
 train_corpus, test_corpus, train_labels, test_labels = prepare_datasets(corpus,
                                                                         labels,
@@ -55,19 +71,22 @@ train_corpus, test_corpus, train_labels, test_labels = prepare_datasets(corpus,
 from normalization import normalize_corpus
 
 
+print(train_corpus)
+print(test_corpus)
 norm_train_corpus = normalize_corpus(train_corpus)
-norm_test_corpus = normalize_corpus(test_corpus)  
+ #norm_test_corpus = normalize_corpus(test_corpus)  
 
 ''.strip()
 
-
+print(norm_train_corpus)
 # bag of words features
 bow_vectorizer, bow_train_features = bow_extractor(norm_train_corpus)  
-bow_test_features = bow_vectorizer.transform(norm_test_corpus) 
+#bow_test_features = bow_vectorizer.transform(norm_test_corpus) 
+print(bow_vectorizer)
 
 # tfidf features
 tfidf_vectorizer, tfidf_train_features = tfidf_extractor(norm_train_corpus)  
-tfidf_test_features = tfidf_vectorizer.transform(norm_test_corpus)    
+#tfidf_test_features = tfidf_vectorizer.transform(norm_test_corpus)    
 
 
 # tokenize documents
@@ -196,7 +215,6 @@ svm_tfidfwv_predictions = train_predict_evaluate_model(classifier=svm,
 
  
 
-import pandas as pd
 cm = metrics.confusion_matrix(test_labels, svm_tfidf_predictions)
 pd.DataFrame(cm, index=range(0,20), columns=range(0,20))  
 
