@@ -18,9 +18,3 @@ def google_search(query, limit=10):
         urls.append(url)
     print("search end")
     return urls
-
-def main():
-    google_search("<search words>")
-
-if __name__ == '__main__':
-    main()

@@ -30,7 +30,10 @@ def remove_empty_docs(corpus, labels):
 
     return filtered_corpus, filtered_labels
     
+import os
 
+# print(os.listdir(path='.'))
+# os.chdir("./python-tool")
 
 import google_search as gs
 import read_url
@@ -55,6 +58,10 @@ dataset = pd.DataFrame(columns =['target', 'data'])
 df3 = pd.DataFrame([['中華料理', data]], columns =['target', 'data'])
 dataset = dataset.append(df3)
 dataset = dataset.append(df3)
+dataset = dataset.append(df3)
+dataset = dataset.append(df3)
+dataset = dataset.append(df3)
+dataset = dataset.append(df3)
 
 
 corpus, labels = dataset.data, dataset.target
@@ -68,32 +75,30 @@ train_corpus, test_corpus, train_labels, test_labels = prepare_datasets(corpus,
                                                                         test_data_proportion=0.3)
                                           
                                                      
-from normalization import normalize_corpus
+#from normalization import normalize_corpus
 
 
 print(train_corpus)
 print(test_corpus)
 norm_train_corpus = normalize_corpus(train_corpus)
- #norm_test_corpus = normalize_corpus(test_corpus)  
+norm_test_corpus = normalize_corpus(test_corpus)  
 
 ''.strip()
-
-print(norm_train_corpus)
 # bag of words features
 bow_vectorizer, bow_train_features = bow_extractor(norm_train_corpus)  
-#bow_test_features = bow_vectorizer.transform(norm_test_corpus) 
-print(bow_vectorizer)
+bow_test_features = bow_vectorizer.transform(norm_test_corpus) 
+print(bow_train_features)
 
 # tfidf features
 tfidf_vectorizer, tfidf_train_features = tfidf_extractor(norm_train_corpus)  
-#tfidf_test_features = tfidf_vectorizer.transform(norm_test_corpus)    
+tfidf_test_features = tfidf_vectorizer.transform(norm_test_corpus)    
 
 
 # tokenize documents
 tokenized_train = [nltk.word_tokenize(text)
                    for text in norm_train_corpus]
 tokenized_test = [nltk.word_tokenize(text)
-                   for text in norm_test_corpus]  
+                   for text in norm_test_corpus]
 # build word2vec model                   
 model = gensim.models.Word2Vec(tokenized_train,
                                size=500,

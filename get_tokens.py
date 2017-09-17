@@ -10,7 +10,6 @@ Created on Wed Jun 21 21:59:00 2017
 def get_tokens(text):
 
   from janome.tokenizer import Tokenizer
-
   t = Tokenizer()
   tokens = t.tokenize(text.replace(',', ' '))
   words = []
@@ -18,10 +17,7 @@ def get_tokens(text):
   for token in tokens:
     if (token.surface is not None) and token.surface != "":
       words.append(token.surface)
-
-
-  print(words)
-  print(type(words))
+  words = " ".join(words)
   return words
 
 import numpy as np
