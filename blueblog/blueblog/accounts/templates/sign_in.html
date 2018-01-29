@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Sign In</h1>
+<form action="{% url 'accounts:sign-in' %}" method="post">
+  {% csrf_token %}
+
+  <p>
+    <label for="id_username">Username:</label>
+    <input type="text" name="username" autofocus="" maxlength="254" required="" id="id_username">
+  </p>
+
+  <p>
+    <label for="id_password">Password:</label>
+    <input type="password" name="password" required="" id="id_password">
+  </p>
+
+  <!-- debug -->
+  <!--{{ form.as_p}}-->
+
+  <input type="hidden" name="next" value="{{ next }}" />
+  <input type="submit" value="Submit" />
+</form>
+{% endblock %}
